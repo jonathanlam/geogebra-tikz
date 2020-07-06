@@ -2796,11 +2796,8 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 			}
 			linestyleCode(linestyle, sb);
 		}
-		//if (!info.getLinecolor().equals(GColor.BLACK)) {
-		StringBuilder checkBlack = new StringBuilder();
-		colorCode(geo.getObjectColor(), checkBlack);
-		sb.append("checkBlack = " + checkBlack);
-		if (!(checkBlack.equals("black"))) {
+
+		if (!(isBlack(geo.getObjectColor()))) {
 			if (coma) {
 				sb.append(",");
 			} else {
@@ -2930,6 +2927,19 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 	boolean compareColor(int r, int g, int b, int r2, int g2, int b2) {
 		return ((r==r2) && (g==g2) && (b==b2));
 	}
+    
+    boolean isBlack(GColor c0) {
+        int red = c0.getRed();
+		int green = c0.getGreen();
+		int blue = c0.getBlue();
+        
+        if ((c0.equals(GColor.BLACK))
+			|| (compareColor(red, green, blue, 68, 68, 68)) // fixed points
+			|| (compareColor(red, green, blue, 127, 0, 255))) // purple points r treated as black
+            return true;
+            
+        return false;
+    }
 
 	/**
 	 * Append the name color to StringBuilder sb It will create a custom color,
@@ -2956,7 +2966,7 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 			if (customColor.containsKey(c)) {
 				colorname = customColor.get(c).toString();
 			} else {
-				if (c.equals(GColor.BLACK)) {
+				if (isBlack(c)) {
 					sb.append("black");
 					return;
 				} else if (c.equals(GColor.RED)) {
@@ -2998,10 +3008,7 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 			int red = c0.getRed();
 			int green = c0.getGreen();
 			int blue = c0.getBlue();
-			if ((c0.equals(GColor.BLACK))
-					|| (compareColor(red, green, blue, 68, 68, 68)) // fixed points
-					|| (compareColor(red, green, blue, 127, 0, 255)) // purple points r treated as black
-			) {
+			if (isBlack(c0)) {
 				sb.append("black");
 				return;
 			}
@@ -3080,7 +3087,7 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 			double y1 = coords.getY();
 			writePoint(x1, y1, str);
 			if (i != path.length - 1) {
-				str.append("-- ");
+				str.append(" -- ");
 			}
 		}
 		str.append(";\n");
