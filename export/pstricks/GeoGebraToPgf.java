@@ -1496,6 +1496,8 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 
 	private void drawPgfStandard(GeoFunction geo, StringBuilder sb,
 			String value0, double xrangemax, double xrangemin) {
+		// this function will draw most basic curves
+		// x^2, x^3, sin x, 5/x, 5/(sqrt(x)), ln x etc
 		sb.append("\\draw");
 		String s = lineOptionCode(geo, true);
 		sb.append("[");
@@ -1515,8 +1517,6 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 		sb.append("});\n");
 		//sb.append("%%% drawPgfStandard\n");
 		//sb.append("%%% " + value0 + "\n");
-		// this function will draw most basic curves
-		// x^2, x^3, sin x, 5/x, 5/(sqrt(x)), ln x etc
 	}
 
 	private void drawGnuPlot(GeoFunction geo, StringBuilder sb, String value,
@@ -2432,6 +2432,7 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 
 	@Override
 	protected void drawGeoSegment(GeoSegmentND geo) {
+        // Draw interval
 		double[] A = new double[3];
 		double[] B = new double[3];
 		GeoPointND pointStart = geo.getStartPoint();
@@ -2474,6 +2475,7 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 	@Override
 	protected void drawLine(double x1, double y1, double x2, double y2,
 			GeoElementND geo) {
+        // Draw interval
 		if (isBeamer) {
 			code.append("  ");
 		}
