@@ -1787,6 +1787,11 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 		code.append("] ");
 		writePoint(x1, y1, code);
 		code.append(" -- ");
+        
+        if (geo.isLabelVisible()) {
+			code.append("node[auto, swap] {$" + geo.getCaption(getStringTemplate()) + "$} ");
+		}
+        
 		writePoint(x2, y2, code);
 
 		// Axes labelling
@@ -2022,6 +2027,7 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 	 */
 	@Override
 	protected void drawGeoPoint(GeoPointND gp) {
+        // draw point
 		if (frame.getExportPointSymbol()) {
 			double[] A = new double[3];
 
@@ -2249,8 +2255,14 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 					writePoint(x, y, codePoint);
 					codePoint.append(" circle (");
 					codePoint.append(format(dotsize / 2));
-					codePoint.append("pt);\n");
-					//codePoint.append("% draw point);\n");
+					codePoint.append("pt)");
+                    
+                    if (gp.isLabelVisible()) {
+                        codePoint.append(" node [] {$" + label + "$}");
+                    }
+					codePoint.append(";\n");
+					//codePoint.append("%%% draw point);\n");
+                    
 				}
 			}
 			endBeamer(codePoint);
@@ -2450,10 +2462,11 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 
 		// assume 2D (3D check done earlier)
 		writePoint(A[0], A[1], code);
-		code.append("-- ");
+		code.append(" -- ");
 
-		if (isPurple(geo)) {
-			code.append("node[auto, swap] {$" + geo.getCaption(getStringTemplate()) + "$}");
+		//if (isPurple(geo)) {
+		if (geo.isLabelVisible()) {
+			code.append("node[auto, swap] {$" + geo.getCaption(getStringTemplate()) + "$} ");
 		}
 
 		writePoint(B[0], B[1], code);
@@ -2769,7 +2782,7 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 		// if (linethickness != EuclidianStyleConstants.DEFAULT_LINE_THICKNESS)
 		// {
 		// coma needed
-		coma = true;
+		// coma = true;
 		// bracket needed
 		//sb.append("line width=");
 		//sb.append(format(linethickness / 2.0 * 0.8));
