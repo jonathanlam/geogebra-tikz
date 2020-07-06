@@ -124,7 +124,7 @@ public abstract class GeoGebraExport {
 		// and -0 treated as 0.
 		String ret = kernel.format(DoubleUtil.checkDecimalFraction(d), tpl);
 
-		ret = StringUtil.cannonicNumber2(ret);
+		ret = StringUtil.canonicalNumber2(ret);
 
 		String s = String.format("%.3f", d);
 		s = s.indexOf(".") < 0 ? s : s.replaceAll("0*$", "").replaceAll("\\.$", "");
@@ -346,10 +346,10 @@ public abstract class GeoGebraExport {
 				&& (g.isEuclidianVisible() || trimmedInter)) {
 			if (g instanceof GeoPointND) {
 				drawGeoPoint((GeoPointND) g);
-				drawLabel(g, null);
+				//drawLabel(g, null);
 			} else if (g instanceof GeoSegmentND) {
 				drawGeoSegment((GeoSegmentND) g);
-				drawLabel(g, null);
+				//drawLabel(g, null);
 			} else if (g instanceof GeoRayND) {
 				drawGeoRay((GeoRayND) g);
 				drawLabel(g, null);
@@ -422,7 +422,7 @@ public abstract class GeoGebraExport {
 				}
 			} else if (g instanceof GeoVector) {
 				drawGeoVector((GeoVector) g);
-				drawLabel(g, null);
+				// drawLabel(g, null);
 			} else if (g instanceof GeoConicPart) {
 				GeoConicPart geo = (GeoConicPart) g;
 				drawGeoConicPart(geo);
