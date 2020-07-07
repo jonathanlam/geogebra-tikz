@@ -1795,9 +1795,9 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 		writePoint(x2, y2, code);
 
 		// Axes labelling
-		if (y1 == y2 && y2 ==0)
+		if (y1 == 0 && y2 ==0)
 			code.append(" node[below] {$x$}");
-		if (x1 == x2 && x2 ==0)
+		if (x1 == 0 && x2 ==0)
 			code.append(" node[left] {$y$}");
 
 
@@ -2017,6 +2017,58 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 			break;
 		}
 	}
+    
+    String getNodePosition(GeoPointND gp) {
+        DrawableND geo = euclidianView.getDrawableFor(gp);
+        double[] A = new double[3];
+		gp.getInhomCoords(A);
+		double x = A[0];
+		double y = A[1];
+        
+        double xLabel = geo.getxLabel();
+		double yLabel = geo.getyLabel();
+		xLabel = euclidianView.toRealWorldCoordX(Math.round(xLabel));
+		yLabel = euclidianView.toRealWorldCoordY(Math.round(yLabel));
+        
+        
+        double below = ((x) - xLabel)*((x) - xLabel) 
+                     + ((y-1) - yLabel)*((y-1) - yLabel);
+        double above = ((x) - xLabel)*((x) - xLabel) 
+                     + ((y+1) - yLabel)*((y+1) - yLabel);
+        double left = ((x-1) - xLabel)*((x-1) - xLabel) 
+                     + ((y) - yLabel)*((y) - yLabel);
+        double right = ((x+1) - xLabel)*((x+1) - xLabel) 
+                     + ((y) - yLabel)*((y) - yLabel);
+        double aboveright = ((x+0.71) - xLabel)*((x+0.71) - xLabel) 
+                     + ((y+0.71) - yLabel)*((y+0.71) - yLabel);
+        double belowright = ((x+0.71) - xLabel)*((x+0.71) - xLabel) 
+                     + ((y-0.71) - yLabel)*((y-0.71) - yLabel);
+        double aboveleft = ((x-0.71) - xLabel)*((x-0.71) - xLabel) 
+                     + ((y+0.71) - yLabel)*((y+0.71) - yLabel);
+        double belowleft = ((x-0.71) - xLabel)*((x-0.71) - xLabel) 
+                     + ((y-0.71) - yLabel)*((y-0.71) - yLabel);
+                     
+        double minDist = below;
+        if (above < minDist) minDist = above;
+        if (left < minDist) minDist = left;
+        if (right < minDist) minDist = right;
+        
+        if (belowright < minDist) minDist = belowright;
+        if (aboveright < minDist) minDist = aboveright;
+        if (belowleft < minDist) minDist = belowleft;
+        if (aboveleft < minDist) minDist = aboveleft;
+        
+        if (minDist == above) return "above";
+        else if (minDist == below) return "below";
+        else if (minDist == left) return "left";
+        else if (minDist == right) return "right";
+        
+        else if (minDist == aboveright) return "above right";
+        else if (minDist == belowright) return "below right";
+        else if (minDist == aboveleft) return "above left";
+        else if (minDist == belowleft) return "below left";
+        return "below";
+    }
 
 	/**
 	 * This will generate the Tikz code to draw the GeoPoint gp into the
@@ -2243,6 +2295,7 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 				int blue = dotcolor.getBlue();
 				//String label = gp.getLabelDescription();
 				String label = gp.getCaption(getStringTemplate());
+                String nodePosition = getNodePosition(gp);
 				if (red == 127 && green == 0 && blue == 255) {
 					codePoint.append("\\draw ");
 					writePoint(x, y, codePoint);
@@ -2258,7 +2311,7 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 					codePoint.append("pt)");
                     
                     if (gp.isLabelVisible()) {
-                        codePoint.append(" node [] {$" + label + "$}");
+                        codePoint.append(" node [" + nodePosition + "] {$" + label + "$}");
                     }
 					codePoint.append(";\n");
 					//codePoint.append("%%% draw point);\n");
