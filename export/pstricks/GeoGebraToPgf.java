@@ -2299,7 +2299,7 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 				if (red == 127 && green == 0 && blue == 255) {
 					codePoint.append("\\draw ");
 					writePoint(x, y, codePoint);
-					codePoint.append(" node [] {$" + label + "$};\n");
+					codePoint.append(" node [" + nodePosition + "] {$" + label + "$};\n");
 					//codePoint.append("% purple points are labels);\n");
 				} else {
 					codePoint.append("\\draw [fill=");
@@ -2310,9 +2310,10 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 					codePoint.append(format(dotsize / 2));
 					codePoint.append("pt)");
                     
-                    if (gp.isLabelVisible()) {
+                    if (gp.isLabelVisible())
                         codePoint.append(" node [" + nodePosition + "] {$" + label + "$}");
                     }
+
 					codePoint.append(";\n");
 					//codePoint.append("%%% draw point);\n");
                     
