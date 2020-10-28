@@ -831,11 +831,11 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
 		}
 		code.append("\\draw [shift={");
 		writePoint(vertex[0], vertex[1], code);
-		code.append("},-");
+		code.append("},");
 		if (anticlockwise) {
-			code.append(">");
+			code.append("->");
 		} else {
-			code.append("<");
+			code.append("<-");
 		}
 		String s = lineOptionCode(geo, false);
 		if (s.length() != 0) {
@@ -2312,7 +2312,6 @@ public abstract class GeoGebraToPgf extends GeoGebraExport {
                     
                     if (gp.isLabelVisible())
                         codePoint.append(" node [" + nodePosition + "] {$" + label + "$}");
-                    }
 
 					codePoint.append(";\n");
 					//codePoint.append("%%% draw point);\n");
